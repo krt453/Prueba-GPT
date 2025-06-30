@@ -16,6 +16,7 @@ Este proyecto contiene un pequeño ejemplo de aplicación Flask.
    pip install -r requirements.txt
    ```
 
+
 ## Ejecutar la aplicación
 
 Para arrancar el servidor de desarrollo de Flask ejecuta:

@@ -1,10 +1,8 @@
 from flask import Flask
-from flask_socketio import SocketIO, emit
 
-app = Flask(__name__)
-socketio = SocketIO(app)
 
 @app.route('/')
+@cache.cached(timeout=60)
 def home():
     return '¡Bienvenido a Game Hub!'
 

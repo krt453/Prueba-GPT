@@ -1,2 +1,5 @@
 Flask
 mysqlclient
+gunicorn
+Flask-Caching
+redis

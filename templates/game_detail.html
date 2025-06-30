@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ game.name }} - Game Hub{% endblock %}
+
+{% block content %}
+<h1>{{ game.name }}</h1>
+<p>{{ game.description }}</p>
+<a href="/games" class="btn btn-secondary">Volver al listado</a>
+{% endblock %}

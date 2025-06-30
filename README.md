@@ -1,6 +1,7 @@
 # Prueba-GPT
 
 Este proyecto contiene un pequeño ejemplo de aplicación Flask.
+Incluye un sistema de caché basado en Redis mediante `Flask-Caching`.
 
 ## Instalación
 
@@ -27,6 +28,12 @@ Este proyecto contiene un pequeño ejemplo de aplicación Flask.
 Para arrancar el servidor de desarrollo de Flask ejecuta:
 ```bash
 python app.py
+```
+
+Si quieres ejecutar la aplicación en un entorno de producción de forma
+simple, puedes usar Gunicorn mediante el script incluido:
+```bash
+./run_gunicorn.sh
 ```
 
 ## Integración con Apache y mod_wsgi

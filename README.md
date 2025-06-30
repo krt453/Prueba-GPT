@@ -29,14 +29,14 @@ python app.py
 1. Asegúrate de tener instalado `mod_wsgi`.
 2. Copia el archivo `gamehub.wsgi` en el directorio del proyecto.
 3. Configura Apache añadiendo algo similar a lo siguiente en tu VirtualHost:
-   ```apache
-   WSGIDaemonProcess gamehub python-path=/ruta/al/proyecto/.venv/lib/python3.x/site-packages
-   WSGIProcessGroup gamehub
-   WSGIScriptAlias / /ruta/al/proyecto/gamehub.wsgi
-
-   <Directory /ruta/al/proyecto>
-       Require all granted
-   </Directory>
-   ```
+    ```apache
+    WSGIDaemonProcess gamehub python-path=/ruta/al/proyecto/.venv/lib/python3.x/site-packages
+    WSGIProcessGroup gamehub
+    WSGIScriptAlias / /ruta/al/proyecto/gamehub.wsgi
+    
+    <Directory /ruta/al/proyecto>
+    Require all granted
+    </Directory>
+    ```
 
 Al reiniciar Apache, la aplicación estará disponible usando `mod_wsgi`.

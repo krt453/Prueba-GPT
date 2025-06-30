@@ -1,7 +1,3 @@
-from flask import Flask, render_template, abort
-
-app = Flask(__name__)
-
 # Lista de juegos de ejemplo
 games = [
     {
@@ -22,6 +18,7 @@ games = [
 ]
 
 @app.route('/')
+@cache.cached(timeout=60)
 def home():
     """Página de inicio."""
     return render_template('index.html')
@@ -41,5 +38,6 @@ def game_detail(game_id: int):
         abort(404)
     return render_template('game_detail.html', game=game)
 
+
 if __name__ == '__main__':
-    app.run()
+    socketio.run(app)

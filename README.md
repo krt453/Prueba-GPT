@@ -15,11 +15,7 @@ Este proyecto contiene un pequeño ejemplo de aplicación Flask.
    source .venv/bin/activate
    pip install -r requirements.txt
    ```
-3. De forma opcional puedes ejecutar el script `setup.sh` que automatiza la
-   creación del entorno virtual e instala las dependencias:
-   ```bash
-   bash setup.sh
-   ```
+
 
 ## Ejecutar la aplicación
 

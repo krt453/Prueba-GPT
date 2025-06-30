@@ -33,10 +33,16 @@ python app.py
     WSGIDaemonProcess gamehub python-path=/ruta/al/proyecto/.venv/lib/python3.x/site-packages
     WSGIProcessGroup gamehub
     WSGIScriptAlias / /ruta/al/proyecto/gamehub.wsgi
-    
+
     <Directory /ruta/al/proyecto>
     Require all granted
     </Directory>
     ```
+4. Guarda esta configuración en un archivo de tu directorio `sites-available`,
+   por ejemplo `/etc/apache2/sites-available/gamehub.conf`, y habilítalo con:
+   ```bash
+   sudo a2ensite gamehub.conf
+   sudo systemctl reload apache2
+   ```
 
 Al reiniciar Apache, la aplicación estará disponible usando `mod_wsgi`.

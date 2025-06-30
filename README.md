@@ -52,3 +52,14 @@ simple, puedes usar Gunicorn mediante el script incluido:
     ```
 
 Al reiniciar Apache, la aplicación estará disponible usando `mod_wsgi`.
+
+## API con JWT
+
+La aplicación incluye un pequeño API bajo el prefijo `/api` que permite listar,
+crear, actualizar y eliminar juegos. Todas las rutas están protegidas con
+JSON Web Tokens.
+
+Para obtener un token envía una petición `POST` a `/login` con las claves
+`username` y `password` (por defecto `admin`/`password`). El token devuelto se
+usa en la cabecera `Authorization` con el formato `Bearer <token>` para acceder
+a las rutas protegidas.

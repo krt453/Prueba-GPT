@@ -1,24 +1,4 @@
-from flask import Flask, render_template, abort
 
-
-# Lista de juegos de ejemplo
-games = [
-    {
-        "id": 1,
-        "name": "Ajedrez",
-        "description": "Juego de estrategia clásico."
-    },
-    {
-        "id": 2,
-        "name": "Monopoly",
-        "description": "Compra y vende propiedades para hacerte con todo."
-    },
-    {
-        "id": 3,
-        "name": "Póker",
-        "description": "El popular juego de cartas para varias personas."
-    },
-]
 
 @app.route('/')
 @cache.cached(timeout=60)
@@ -52,6 +32,15 @@ def handle_send_message(data):
     """Broadcast a chat message to all connected clients."""
     emit('receive_message', data, broadcast=True)
 
+
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.json.get('username')
+    password = request.json.get('password')
+    if username == 'admin' and password == 'password':
+        token = create_access_token(identity=username)
+        return jsonify(access_token=token)
+    return jsonify({'error': 'Bad credentials'}), 401
 
 if __name__ == '__main__':
     socketio.run(app)

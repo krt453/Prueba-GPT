@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Listado de Juegos - Game Hub{% endblock %}
+
+{% block content %}
+<h1>Juegos Disponibles</h1>
+<ul class="list-group">
+    {% for game in games %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span>{{ game.name }}</span>
+        <a class="btn btn-primary btn-sm" href="/games/{{ game.id }}">Ver detalles</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

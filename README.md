@@ -1,7 +1,6 @@
 # Prueba-GPT
 
 Este proyecto contiene un pequeño ejemplo de aplicación Flask.
-Incluye un sistema de caché basado en Redis mediante `Flask-Caching`.
 
 ## Instalación
 
@@ -34,6 +33,15 @@ Si quieres ejecutar la aplicación en un entorno de producción de forma
 simple, puedes usar Gunicorn mediante el script incluido:
 ```bash
 ./run_gunicorn.sh
+```
+
+## Ejecutar pruebas
+
+Instala las dependencias de desarrollo y ejecuta `pytest`:
+
+```bash
+pip install -r requirements-dev.txt
+pytest
 ```
 
 ## Integración con Apache y mod_wsgi

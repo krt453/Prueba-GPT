@@ -1,4 +1,2 @@
 Flask
 mysqlclient
-pytest
-pytest-flask

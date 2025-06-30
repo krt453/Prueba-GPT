@@ -1,91 +1,46 @@
-from flask import Flask, request, jsonify, session
-from functools import wraps
-
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'dev'
-app.games = {}
-app.next_id = 1
 
 
-def login_required(fn):
-    """Simple decorator to require authentication."""
-    @wraps(fn)
-    def wrapper(*args, **kwargs):
-        if not session.get('user'):
-            return jsonify({'error': 'Unauthorized'}), 401
-        return fn(*args, **kwargs)
+@app.route('/')
+@cache.cached(timeout=60)
+def home():
+    """Página de inicio."""
+    return render_template('index.html')
 
-    return wrapper
+
+@app.route('/games')
+def games_list():
+    """Muestra un listado de juegos."""
+    return render_template('games.html', games=games)
+
+
+@app.route('/games/<int:game_id>')
+def game_detail(game_id: int):
+    """Muestra el detalle de un juego por identificador."""
+    game = next((g for g in games if g["id"] == game_id), None)
+    if game is None:
+        abort(404)
+    return render_template('game_detail.html', game=game)
+
+@socketio.on('update_score')
+def handle_update_score(data):
+    """Broadcast the updated score to all connected clients."""
+    emit('score_updated', data, broadcast=True)
+
+
+@socketio.on('send_message')
+def handle_send_message(data):
+    """Broadcast a chat message to all connected clients."""
+    emit('receive_message', data, broadcast=True)
 
 
 @app.route('/login', methods=['POST'])
 def login():
-    data = request.get_json() or {}
-    if data.get('username') == 'admin' and data.get('password') == 'secret':
-        session['user'] = data['username']
-        return jsonify({'message': 'logged in'})
-    return jsonify({'error': 'Unauthorized'}), 401
-
-
-@app.route('/logout', methods=['POST'])
-@login_required
-def logout():
-    session.pop('user', None)
-    return jsonify({'message': 'logged out'})
-
-
-@app.route('/games', methods=['GET'])
-def list_games():
-    return jsonify(list(app.games.values()))
-
-
-@app.route('/games', methods=['POST'])
-@login_required
-def create_game():
-    data = request.get_json() or {}
-    game = {
-        'id': app.next_id,
-        'name': data.get('name'),
-        'genre': data.get('genre'),
-    }
-    app.games[app.next_id] = game
-    app.next_id += 1
-    return jsonify(game), 201
-
-
-@app.route('/games/<int:game_id>', methods=['GET'])
-def get_game(game_id):
-    game = app.games.get(game_id)
-    if not game:
-        return jsonify({'error': 'Not found'}), 404
-    return jsonify(game)
-
-
-@app.route('/games/<int:game_id>', methods=['PUT'])
-@login_required
-def update_game(game_id):
-    game = app.games.get(game_id)
-    if not game:
-        return jsonify({'error': 'Not found'}), 404
-    data = request.get_json() or {}
-    if 'name' in data:
-        game['name'] = data['name']
-    if 'genre' in data:
-        game['genre'] = data['genre']
-    return jsonify(game)
-
-
-@app.route('/games/<int:game_id>', methods=['DELETE'])
-@login_required
-def delete_game(game_id):
-    if game_id in app.games:
-        del app.games[game_id]
-        return '', 204
-    return jsonify({'error': 'Not found'}), 404
-
-@app.route('/')
-def home():
-    return '¡Bienvenido a Game Hub!'
+    username = request.json.get('username')
+    password = request.json.get('password')
+    if username == 'admin' and password == 'password':
+        token = create_access_token(identity=username)
+        return jsonify(access_token=token)
+    return jsonify({'error': 'Bad credentials'}), 401
 
 if __name__ == '__main__':
-    app.run()
+    socketio.run(app)

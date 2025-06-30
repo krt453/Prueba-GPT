@@ -1,6 +1,7 @@
 # Prueba-GPT
 
 Este proyecto contiene un pequeño ejemplo de aplicación Flask.
+Incluye un sistema de caché basado en Redis mediante `Flask-Caching`.
 
 ## Instalación
 
@@ -29,6 +30,12 @@ Para arrancar el servidor de desarrollo de Flask ejecuta:
 python app.py
 ```
 
+Si quieres ejecutar la aplicación en un entorno de producción de forma
+simple, puedes usar Gunicorn mediante el script incluido:
+```bash
+./run_gunicorn.sh
+```
+
 ## Integración con Apache y mod_wsgi
 
 1. Asegúrate de tener instalado `mod_wsgi`.
@@ -45,3 +52,14 @@ python app.py
     ```
 
 Al reiniciar Apache, la aplicación estará disponible usando `mod_wsgi`.
+
+## API con JWT
+
+La aplicación incluye un pequeño API bajo el prefijo `/api` que permite listar,
+crear, actualizar y eliminar juegos. Todas las rutas están protegidas con
+JSON Web Tokens.
+
+Para obtener un token envía una petición `POST` a `/login` con las claves
+`username` y `password` (por defecto `admin`/`password`). El token devuelto se
+usa en la cabecera `Authorization` con el formato `Bearer <token>` para acceder
+a las rutas protegidas.

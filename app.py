@@ -1,18 +1,22 @@
 from flask import Flask
-from flask_caching import Cache
 
-app = Flask(__name__)
-app.config.from_mapping({
-    "CACHE_TYPE": "RedisCache",
-    "CACHE_REDIS_HOST": "localhost",
-    "CACHE_REDIS_PORT": 6379,
-})
-cache = Cache(app)
 
 @app.route('/')
 @cache.cached(timeout=60)
 def home():
     return '¡Bienvenido a Game Hub!'
 
+@socketio.on('update_score')
+def handle_update_score(data):
+    """Broadcast the updated score to all connected clients."""
+    emit('score_updated', data, broadcast=True)
+
+
+@socketio.on('send_message')
+def handle_send_message(data):
+    """Broadcast a chat message to all connected clients."""
+    emit('receive_message', data, broadcast=True)
+
+
 if __name__ == '__main__':
-    app.run()
+    socketio.run(app)

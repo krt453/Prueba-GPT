@@ -75,6 +75,12 @@ with app.app_context():
 app.register_blueprint(api_bp)
 
 
+@app.route('/')
+def home():
+    """Simple greeting for the root path."""
+    return '¡Bienvenido a Game Hub!'
+
+
 @app.route('/games', methods=['GET'])
 @jwt_required()
 def games_list():
@@ -224,4 +230,6 @@ def delete_game(gid):
     return '', 404
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    debug_env = os.getenv('DEBUG', '')
+    debug_mode = debug_env.lower() in ('1', 'true', 'yes')
+    app.run(debug=debug_mode)

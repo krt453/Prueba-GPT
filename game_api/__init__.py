@@ -49,7 +49,7 @@ def create_game():
 def update_game(game_id):
     """Update an existing game."""
     data = request.get_json() or {}
-    game = Game.query.get(game_id)
+    game = db.session.get(Game, game_id)
     if game:
         game.name = data.get('name', game.name)
         if 'description' in data:
@@ -71,7 +71,7 @@ def delete_game(game_id):
     """Remove a game."""
     if not is_admin():
         return '', 403
-    game = Game.query.get(game_id)
+    game = db.session.get(Game, game_id)
     if game:
         db.session.delete(game)
         db.session.commit()

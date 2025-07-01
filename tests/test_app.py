@@ -4,6 +4,7 @@ import pytest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 from app import app as flask_app
+from gamehub.models import User
 
 @pytest.fixture
 def app():
@@ -32,6 +33,13 @@ def test_successful_login(client):
 def test_failed_login(client):
     resp = client.post("/login", json={"username": "admin", "password": "bad"})
     assert resp.status_code == 401
+
+
+def test_password_is_hashed(client):
+    register(client, "alice", "mypw", "user")
+    with client.application.app_context():
+        user = User.query.filter_by(username="alice").first()
+        assert user.password != "mypw"
 
 
 def test_role_restrictions(client):

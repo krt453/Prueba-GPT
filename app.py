@@ -15,13 +15,14 @@ from flask_jwt_extended import (
     get_jwt_identity,
     jwt_required,
 )
+from werkzeug.security import generate_password_hash, check_password_hash
 from gamehub.models import db, Game, User
 from gamehub.forms import GameForm
 from game_api import api_bp
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'dev'
-app.config['JWT_SECRET_KEY'] = 'jwt-secret'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev')
+app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'jwt-secret')
 
 jwt = JWTManager(app)
 
@@ -63,7 +64,11 @@ with app.app_context():
 
     # Ensure an admin user exists for initial logins
     if not User.query.filter_by(username="admin").first():
-        admin = User(username="admin", password="secret", role="admin")
+        admin = User(
+            username="admin",
+            password=generate_password_hash("secret"),
+            role="admin",
+        )
         db.session.add(admin)
         db.session.commit()
 
@@ -89,7 +94,11 @@ def register():
         return jsonify({'error': 'Missing credentials'}), 400
     if User.query.filter_by(username=username).first():
         return jsonify({'error': 'User exists'}), 400
-    user = User(username=username, password=password, role=role)
+    user = User(
+        username=username,
+        password=generate_password_hash(password),
+        role=role,
+    )
     db.session.add(user)
     db.session.commit()
     return jsonify(user.to_dict()), 201
@@ -100,8 +109,8 @@ def login():
     data = request.get_json() or {}
     username = data.get('username')
     password = data.get('password')
-    user = User.query.filter_by(username=username, password=password).first()
-    if user:
+    user = User.query.filter_by(username=username).first()
+    if user and check_password_hash(user.password, password or ""):
         token = create_access_token(identity=user.username)
         return jsonify(access_token=token, role=user.role)
     return '', 401
@@ -131,7 +140,7 @@ def create_game():
 @app.route('/games/<int:gid>', methods=['GET'])
 @jwt_required()
 def get_game(gid):
-    game = Game.query.get(gid)
+    game = db.session.get(Game, gid)
     if game:
         return jsonify(game.to_dict())
     return '', 404
@@ -141,7 +150,7 @@ def get_game(gid):
 @jwt_required()
 def game_detail_page(gid):
     """Render details of a game using a template."""
-    game = Game.query.get_or_404(gid)
+    game = db.session.get(Game, gid) or abort(404)
     return render_template(
         'game_detail.html', game=game, is_admin=admin_required()
     )
@@ -173,7 +182,7 @@ def edit_game_form(gid):
     """Display and process the game edit form."""
     if not admin_required():
         abort(403)
-    game = Game.query.get_or_404(gid)
+    game = db.session.get(Game, gid) or abort(404)
     form = GameForm(obj=game)
     if form.validate_on_submit():
         form.populate_obj(game)
@@ -186,7 +195,7 @@ def edit_game_form(gid):
 @jwt_required()
 def update_game(gid):
     data = request.get_json() or {}
-    game = Game.query.get(gid)
+    game = db.session.get(Game, gid)
     if game:
         game.name = data.get('name', game.name)
         if 'description' in data:
@@ -207,7 +216,7 @@ def update_game(gid):
 def delete_game(gid):
     if not admin_required():
         return '', 403
-    game = Game.query.get(gid)
+    game = db.session.get(Game, gid)
     if game:
         db.session.delete(game)
         db.session.commit()

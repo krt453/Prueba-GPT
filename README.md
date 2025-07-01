@@ -35,6 +35,10 @@ simple, puedes usar Gunicorn mediante el script incluido:
 ./run_gunicorn.sh
 ```
 
+En un entorno de producción es recomendable definir las variables de entorno
+`SECRET_KEY` y `JWT_SECRET_KEY` con valores propios para asegurar las claves
+de la aplicación y de los tokens JWT.
+
 ## Base de datos
 
 La aplicación persiste los juegos en una base de datos MySQL. Puedes

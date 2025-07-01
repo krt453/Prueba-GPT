@@ -89,6 +89,21 @@ def games_list():
     return render_template('games.html', games=games, is_admin=admin_required())
 
 
+@app.route('/games/search', methods=['GET'])
+@jwt_required()
+def search_games():
+    """Return games filtered by optional query params."""
+    q = request.args.get('q')
+    genre = request.args.get('genre')
+    query = Game.query
+    if q:
+        query = query.filter(Game.name.ilike(f'%{q}%'))
+    if genre:
+        query = query.filter(Game.genre.ilike(f'%{genre}%'))
+    games = query.all()
+    return jsonify([g.to_dict() for g in games])
+
+
 @app.route('/register', methods=['POST'])
 def register():
     """Create a new user account."""

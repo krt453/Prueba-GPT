@@ -81,8 +81,8 @@ descripción, género y la fecha de lanzamiento (todos menos el nombre son
 opcionales). Todas las rutas están protegidas con JSON Web Tokens.
 
 Para obtener un token envía una petición `POST` a `/login` con las claves
-`username` y `password` (por defecto `admin`/`password`). El token devuelto se
-usa en la cabecera `Authorization` con el formato `Bearer <token>` para acceder
+`username` y `password` (por defecto `admin`/`secret`). La contraseña del usuario admin se almacena cifrada en la base de datos.
+El token devuelto se usa en la cabecera `Authorization` con el formato `Bearer <token>` para acceder
 a las rutas protegidas.
 
 Las rutas web de gestión de juegos (`/games` y sus variantes) también requieren
@@ -91,7 +91,7 @@ el mismo token y siguen el mismo formato de autenticación.
 ### Usuarios y roles
 
 Puedes registrar nuevos usuarios enviando una petición `POST` a `/register` con
-`username` y `password`. Opcionalmente puedes indicar el campo `role` que por
+`username` y `password`. Las contraseñas se guardan cifradas mediante hashing. Opcionalmente puedes indicar el campo `role` que por
 defecto es `user`. Los usuarios con rol `admin` son los únicos autorizados para
 crear o eliminar juegos tanto en el API como en las vistas web.
 

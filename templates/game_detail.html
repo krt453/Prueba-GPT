@@ -4,6 +4,11 @@
 
 {% block content %}
 <h1>{{ game.name }}</h1>
+{% if game.genre %}<p><strong>Género:</strong> {{ game.genre }}</p>{% endif %}
+{% if game.release_date %}<p><strong>Fecha de lanzamiento:</strong> {{ game.release_date }}</p>{% endif %}
 <p>{{ game.description }}</p>
 <a href="/games" class="btn btn-secondary">Volver al listado</a>
+{% if is_admin %}
+<a href="/games/edit/{{ game.id }}" class="btn btn-primary">Editar</a>
+{% endif %}
 {% endblock %}

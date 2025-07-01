@@ -4,11 +4,22 @@
 
 {% block content %}
 <h1>Juegos Disponibles</h1>
+{% if is_admin %}
+<a class="btn btn-success mb-3" href="/games/new">Nuevo juego</a>
+{% endif %}
 <ul class="list-group">
     {% for game in games %}
-    <li class="list-group-item d-flex justify-content-between align-items-center">
-        <span>{{ game.name }}</span>
-        <a class="btn btn-primary btn-sm" href="/games/{{ game.id }}">Ver detalles</a>
+    <li class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ game.name }}</h5>
+            {% if game.genre %}<small class="text-muted">{{ game.genre }}</small>{% endif %}
+        </div>
+        {% if game.description %}<p class="mb-1">{{ game.description }}</p>{% endif %}
+        {% if game.release_date %}<small class="text-muted">Lanzamiento: {{ game.release_date }}</small>{% endif %}
+        <a class="btn btn-primary btn-sm mt-2" href="/games/view/{{ game.id }}">Ver detalles</a>
+        {% if is_admin %}
+        <a class="btn btn-secondary btn-sm mt-2" href="/games/edit/{{ game.id }}">Editar</a>
+        {% endif %}
     </li>
     {% endfor %}
 </ul>

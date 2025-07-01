@@ -1,2 +1,5 @@
 Flask
+Flask-SQLAlchemy
+Flask-JWT-Extended
 mysqlclient
+Flask-WTF

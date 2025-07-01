@@ -104,3 +104,12 @@ crear o eliminar juegos tanto en el API como en las vistas web.
 ## Formularios Web
 
 Se incluye una interfaz basada en Flask-WTF para crear y editar juegos desde la web. Las plantillas utilizan Bootstrap para el estilo y requieren un token JWT en la cabecera `Authorization` como el resto de las rutas.
+
+## Búsqueda de juegos
+
+La ruta `/games/search` permite obtener un listado filtrado en formato JSON. Puedes utilizar los parámetros `q` para buscar por nombre y `genre` para filtrar por género. Por ejemplo:
+
+```bash
+curl -H "Authorization: Bearer <token>" \
+    "http://localhost:5000/games/search?q=tetris&genre=Puzzle"
+```

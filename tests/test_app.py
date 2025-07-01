@@ -129,3 +129,23 @@ def test_requires_auth(client):
     assert r.status_code == 401
     r = client.delete("/games/1")
     assert r.status_code == 401
+
+
+def test_search_games(client):
+    token = login(client)
+    headers = {"Authorization": f"Bearer {token}"}
+    client.post(
+        "/games",
+        json={"name": "Tetris", "genre": "Puzzle"},
+        headers=headers,
+    )
+    client.post(
+        "/games",
+        json={"name": "Doom", "genre": "Action"},
+        headers=headers,
+    )
+    r = client.get("/games/search?q=tet", headers=headers)
+    assert r.status_code == 200
+    data = r.get_json()
+    assert len(data) == 1
+    assert data[0]["name"] == "Tetris"

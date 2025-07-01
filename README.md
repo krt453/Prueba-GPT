@@ -29,6 +29,10 @@ Para arrancar el servidor de desarrollo de Flask ejecuta:
 python app.py
 ```
 
+El modo de depuración se controla mediante la variable de entorno
+`DEBUG`. Si se establece a `1`, `true` o `yes` la aplicación se ejecutará
+en modo debug. De lo contrario, la depuración estará desactivada.
+
 Si quieres ejecutar la aplicación en un entorno de producción de forma
 simple, puedes usar Gunicorn mediante el script incluido:
 ```bash
@@ -38,6 +42,8 @@ simple, puedes usar Gunicorn mediante el script incluido:
 En un entorno de producción es recomendable definir las variables de entorno
 `SECRET_KEY` y `JWT_SECRET_KEY` con valores propios para asegurar las claves
 de la aplicación y de los tokens JWT.
+El archivo `gamehub/config.py` también toma `SECRET_KEY` del entorno en caso
+de que se use su clase `Config` en otras configuraciones.
 
 ## Base de datos
 
